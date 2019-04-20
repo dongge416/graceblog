@@ -1,0 +1,146 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1, minimum-scale=1, user-scalable=no">
+	<title>文章更新网站</title>
+
+	<script src="http://apps.bdimg.com/libs/angular.js/1.4.6/angular.min.js"></script>
+
+</head>
+
+
+
+<body>
+	<br/>
+	<input type="radio" name="radio_user" value="tianyoulan" checked>机器人1号
+	<input type="radio" name="radio_user" value="chenzhuxi5255">机器人2号
+	<input type="radio" name="radio_user" value="zhaoliuping1967">机器人3号
+	<input type="radio" name="radio_user" value="gui_ling">gui_玲
+	<input type="checkbox" name="synchronous_web" id="cb_synchronous_web">是否同步到网站<br/>
+
+	
+	<br/>
+	<hr/>
+	<input type="radio" name="radio_saleslist" value="0" checked>全部
+	<input type="radio" name="radio_saleslist" value="1">女装
+	<input type="radio" name="radio_saleslist" value="2">男装
+	<input type="radio" name="radio_saleslist" value="3">内衣
+	<input type="radio" name="radio_saleslist" value="4">美妆
+	<input type="radio" name="radio_saleslist" value="5">配饰
+	<input type="radio" name="radio_saleslist" value="6">鞋品
+	<input type="radio" name="radio_saleslist" value="7">箱包
+	<input type="radio" name="radio_saleslist" value="8">儿童
+	<input type="radio" name="radio_saleslist" value="9">母婴
+	<input type="radio" name="radio_saleslist" value="10">居家
+	<input type="radio" name="radio_saleslist" value="11">美食
+	<input type="radio" name="radio_saleslist" value="12">数码
+	<input type="radio" name="radio_saleslist" value="13">家电<br/>
+	<br/>
+
+	<button id="btn_update" onclick="loadXMLDoc()">更新榜单</button>
+	<hr/>
+	<button id="btn_brand" onclick="getBrand()">更新品牌榜单</button>
+	<div>
+		<h4>日志信息</h4>
+		<p id="log_text"></p>
+
+	</div>
+	<textarea id="log_content" rows="20" cols="100"></textarea>
+
+
+	<script type="text/javascript">
+
+		function isSynchronousWeb(){
+			var result = 0;
+			var cb = document.getElementById('cb_synchronous_web');
+			if (cb.checked==true) {
+				result = 1;
+			}
+			return result;
+		}
+
+		function getCheckedRadioValue(){
+			var value = "";
+			var radios = document.getElementsByName('radio_user');
+			
+			for (var i = 0; i < radios.length; i++) {
+				if (radios[i].checked==true) {
+					value = radios[i].value;
+					break;
+				}
+			}
+			return value;
+		}
+
+
+		function getSalesListCid(){
+			var value = "";
+			var radios = document.getElementsByName('radio_saleslist');
+			
+			for (var i = 0; i < radios.length; i++) {
+				if (radios[i].checked==true) {
+					value = radios[i].value;
+					break;
+				}
+			}
+			return value;
+		}
+
+	</script>
+
+	<script type="text/javascript">
+
+		
+
+		function loadXMLDoc(){
+
+			var xmlhttp;
+		if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+			xmlhttp=new XMLHttpRequest();
+ 		}else{// code for IE6, IE5
+ 			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+ 		}
+ 		xmlhttp.onreadystatechange=function(){
+ 			if (xmlhttp.readyState==4 && xmlhttp.status==200){
+ 				document.getElementById("log_text").innerText = "查询完毕";
+ 				document.getElementById("log_content").value=xmlhttp.responseText;
+ 			}
+ 		}
+ 		var syncWeb = isSynchronousWeb();
+ 		var value = getCheckedRadioValue();
+ 		var cid = getSalesListCid();
+ 		console.log("value:"+value);
+ 		xmlhttp.open("GET","SalesListAction.php?value="+value+"&cid="+cid+"&syncweb="+syncWeb,true);
+ 		xmlhttp.send();
+ 		document.getElementById("log_text").innerText = "向服务器发送请求,等待中...";
+ 	}	
+
+
+
+		function getBrand(){
+
+			var xmlhttp;
+		if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+			xmlhttp=new XMLHttpRequest();
+ 		}else{// code for IE6, IE5
+ 			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+ 		}
+ 		xmlhttp.onreadystatechange=function(){
+ 			if (xmlhttp.readyState==4 && xmlhttp.status==200){
+ 				document.getElementById("log_text").innerText = "查询完毕";
+ 				document.getElementById("log_content").value=xmlhttp.responseText;
+ 			}
+ 		}
+ 		var syncWeb = isSynchronousWeb();
+ 		var value = getCheckedRadioValue();
+ 		xmlhttp.open("GET","GetBrandAction.php?value="+value+"&syncweb="+syncWeb,true);
+ 		xmlhttp.send();
+ 		document.getElementById("log_text").innerText = "向服务器发送请求,等待中...";
+ 	}	
+
+
+ </script>
+</body>
+</html>
