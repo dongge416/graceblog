@@ -1,0 +1,117 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1, minimum-scale=1, user-scalable=no">
+	<title>文章更新网站</title>
+
+	<script src="http://apps.bdimg.com/libs/angular.js/1.4.6/angular.min.js"></script>
+
+</head>
+
+
+
+<body>
+	<br/>
+	<input type="radio" name="radio_user" value="tianyoulan" checked>机器人1号
+	<input type="radio" name="radio_user" value="chenzhuxi5255">机器人2号
+	<input type="radio" name="radio_user" value="zhaoliuping1967">机器人3号
+	<input type="radio" name="radio_user" value="gui_ling">gui_玲<br/>
+
+	
+	
+	<hr/>
+	
+	<br/>
+	
+
+	<div>
+		<h4>店铺链接</h4>
+
+	</div>
+	
+	<textarea id="item_info" rows="5" cols="80"></textarea>
+	<br/>
+	<button id="add_item" onclick="addItem()">生成口令</button>
+	<button id="clear_item_info" onclick="clearItemInfo()">清空文本框</button>
+	
+	<div>
+		<h4>日志信息</h4>
+		<p id="log_text"></p>
+
+	</div>
+
+	<textarea id="log_content" rows="5" cols="80"></textarea>
+	<br/>
+	<button  onclick="creatArticle4HDK()">生成文章(好单库商品)</button>
+	<button  onclick="creatArticle4DTK()">生成文章(大淘客商品)</button>
+	<blockquote style="background-color: red;">跑步机是没有什么国家认证，国家权威排名的，以下跑步机排名为本站最新评测结果，基于我们多年经验加上总结大量数据得出的结论，如果您觉得不靠谱，我们依然非常真诚地建议您</blockquote>
+
+
+	<script type="text/javascript">
+
+	
+
+		function getCheckedRadioValue(){
+			var value = "";
+			var radios = document.getElementsByName('radio_user');
+			
+			for (var i = 0; i < radios.length; i++) {
+				if (radios[i].checked==true) {
+					value = radios[i].value;
+					break;
+				}
+			}
+			return value;
+		}
+
+
+		
+
+	</script>
+
+	<script type="text/javascript">
+
+		
+
+		function loadXMLDoc(){
+
+			var xmlhttp;
+		if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+			xmlhttp=new XMLHttpRequest();
+ 		}else{// code for IE6, IE5
+ 			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+ 		}
+ 		xmlhttp.onreadystatechange=function(){
+ 			if (xmlhttp.readyState==4 && xmlhttp.status==200){
+ 				document.getElementById("log_text").innerText = "查询完毕";
+ 				document.getElementById("log_content").value=xmlhttp.responseText;
+ 			}
+ 		}
+ 		var syncWeb = isSynchronousWeb();
+ 		var value = getCheckedRadioValue();
+ 		var cid = getSalesListCid();
+ 		console.log("value:"+value);
+ 		xmlhttp.open("GET","SalesListAction.php?value="+value+"&cid="+cid+"&syncweb="+syncWeb,true);
+ 		xmlhttp.send();
+ 		document.getElementById("log_text").innerText = "向服务器发送请求,等待中...";
+ 	}	
+
+
+
+ 
+
+ 	/**
+ 	 * 清空文本输入框
+ 	 * 
+ 	 */
+ 	 function clearItemInfo(){
+ 	 	document.getElementById("item_info").value = "";
+ 	 }
+
+ 	 
+
+ 	</script>
+ </body>
+ </html>

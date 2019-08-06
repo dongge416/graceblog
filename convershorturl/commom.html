@@ -1,0 +1,276 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1, minimum-scale=1, user-scalable=no">
+<title>天天好心情</title>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<style>
+blockquote, body, dd, dir, dl, fieldset, figure, form, h1, h2, h3, h4, h5, h6, hr, input, legend, menu, ol, optgroup, p, pre, tbody, td, textarea, tfoot, th, thead, ul {
+	margin: 0;
+	padding: 0
+}
+
+ol, ul {
+	list-style-type: none;
+	list-style-image: none
+}
+
+body, button, input, select, textarea {
+	-ms-text-autospace: ideograph-alpha ideograph-numeric ideograph-parenthesis;
+	text-autospace: ideograph-alpha ideograph-numeric ideograph-parenthesis
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-weight: 400
+}
+
+* {
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+body {
+	background: #F6F5F7;
+}
+
+.beatHeader {
+	background: #494A4D;
+	height: 50px;
+	width: 100%;
+	position: relative;
+	z-index: 1;
+	overflow: hidden;
+}
+
+.pageMain {
+	position: relative;
+	z-index: 2;
+	padding: 0 16px;
+
+}
+
+.pageMain .imgContainer {
+	padding: 0 16px;
+	margin-top: 14px;
+	
+}
+
+.pageMain .imgContainer img {
+	width: 50%;
+	height: auto;
+	box-shadow: 0px 3px 12px rgba(21, 0, 71, 0.16);
+}
+
+.pageMain .moonTitleContainer {
+	font-size: 14px;
+	color: rgba(0, 0, 0, 0.4);
+	margin-bottom: 16px;
+}
+
+.pageMain .moonTitleContainer span {
+	color: #FF5500;
+	margin-right: 16px;
+}
+
+.pageMain .itemContent {
+	font-size: 14px;
+	color: rgba(0, 0, 0, 0.80);
+	line-height: 21px;
+	text-align: left;
+	margin-bottom: 10px;
+}
+
+.pageMain .item_Pri {
+	font-family: STHeitiSC-Light;
+	font-size: 16px;
+	color: #FF5500;
+	line-height: 16.5px;
+	text-align: right;
+	margin-bottom: 10px;
+}
+
+.pageMain .itemTips {
+	font-size: 12px;
+	color: rgba(0,0,0,.4);
+	text-align: center;
+}
+
+.pageWord {
+	text-align: center;
+}
+
+.pageWord fieldset {
+	padding: 0.8em;
+	margin: 0 2px;
+	border: 1px dashed #f54d23;
+	background: #fff;
+}
+
+.pageWord fieldset legend {
+	background: #f54d23;
+	border: none;
+	font-size: 0.8rem;
+	line-height: 20px;
+	color: #fff;
+	padding: 0 4px;
+}
+
+.pageWord button {
+	border: none;
+	font-size: 16px;
+	padding: 6px 15px;
+	background: #f60;
+	display: inline-block;
+	margin: 10px auto;
+	border-radius: 16px;
+	color: #fff;
+}
+</style>
+</head>
+<body>
+
+<div class="pageMain">
+	<div class="imgContainer" align="center">
+		
+		<img  id="img" src="./pic_tb.gif" alt="">
+	</div>
+	<p class="itemContent">
+		<strong class="item_Pri"></strong>
+		<div id="item_title" style="font-weight: 700;font-size: 14px;margin-bottom: 5px;"></div>
+	</p>
+	<div class="pageWord">
+		<fieldset>
+			<legend id="copy_tip">长按框内>全选>复制>打开手机匋宝</legend>
+			<p id="itemWord" class="itemWord" style="font-size: 12px;">复制框内整段文字，打开「手机.匋.宝」即可「领取优.惠.卷」并购买<span id="taokey"></span></p>
+		</fieldset>
+		<button id="copy" type="button" data-clipboard-text="" class="itemCopy" style="display:none;">一键复制</button>
+		
+	</div>
+</div>
+<script type="text/javascript" src="js/clipboard.min.js"></script>
+<script>
+
+function getUrlParams(paras){
+	var url = decodeURI(location.href);
+	// var url = location.href;
+    var paraString = url.substring(url.indexOf("?") + 1, url.length).split("&");
+    var returnValue;
+    for (i = 0; i < paraString.length; i++) {
+        var tempParas = paraString[i].split('=')[0];
+        var parasValue = paraString[i].split('=')[1];
+        if (tempParas === paras)
+            returnValue = parasValue;
+    }
+    if (typeof(returnValue) == "undefined") {
+        return "";
+    } else {
+        return returnValue;
+    }
+}
+
+$(function(){
+	var number =getUrlParams('number');
+	
+	
+	var number_len = number.length;
+	var number = number.substring(0,number_len-2);
+	
+	
+	
+	console.log(number);
+	var url = decodeURIComponent(getUrlParams('address'));
+	var image = decodeURIComponent(getUrlParams('image'));
+	
+	//$('#img').attr('src', image);
+	$('#coupons').attr('href',url);
+	$('#copy').attr('data-clipboard-text', '￥'+number+'￥');
+	$('#taokey').text('￥'+number+'￥');
+})
+
+
+	//复制文本
+var clipboard = new Clipboard('.itemCopy');
+clipboard.on('success',
+function(e) {
+	if (e.trigger.disabled == false || e.trigger.disabled == undefined) {
+		e.trigger.innerHTML = "复制成功，打开手机匋.宝会自动弹出商品";
+		e.trigger.style.backgroundColor = "#9ED29E";
+		e.trigger.style.borderColor = "#9ED29E";
+		//e.clearSelection();
+		e.trigger.disabled = true;
+		//2秒后按钮恢复原状
+		setTimeout(function() {
+			e.trigger.innerHTML = "一键复制";
+			e.trigger.style.backgroundColor = "#f54d23";
+			e.trigger.style.borderColor = "#f54d23";
+			e.trigger.disabled = false;
+		},
+		4000);
+	}
+});
+
+clipboard.on('error',
+function(e) {
+	e.trigger.innerHTML = "复制失败，请手动复制框内信息";
+	e.trigger.style.backgroundColor = "#8f8f8f";
+	e.trigger.style.borderColor = "#8f8f8f";
+});
+
+$(function() {
+
+	//UA判断
+	var isShow = 0; //控制是否显示一键复制按钮
+	var ua = navigator.userAgent.toLowerCase();
+
+	if (ua.match(/iphone/i) == "iphone" || ua.match(/ipad/i) == "ipad") {
+
+		$('#copy_tip').text("长按框内 > 拷贝 > 打开手机.匋宝");
+		var iphoneInfo = ua.match(/iphone os (\d{1,})/i);
+		var iosVersion = iphoneInfo[1];
+		if (iosVersion >= 10 || ua.match(/ipad/i) == 'ipad') {
+			$('.itemCopy').show();
+		}
+
+	} else {
+		$('.itemCopy').show();
+	}
+
+	//自动选中
+	var beat = document.querySelector('.pageWord');
+	var word = document.querySelector('.itemWord');
+	var copy = document.querySelector('.itemCopy');
+	document.addEventListener("selectionchange",
+	function(e) {
+		window.getSelection().selectAllChildren(word);
+	},
+	false);
+
+});
+</script>
+<script>
+  	var _mtac = {};
+  	(function() {
+  		var mta = document.createElement("script");
+  		mta.src = "//pingjs.qq.com/h5/stats.js?v2.0.4";
+  		mta.setAttribute("name", "MTAH5");
+  		mta.setAttribute("sid", "500641417");
+
+  		var s = document.getElementsByTagName("script")[0];
+  		s.parentNode.insertBefore(mta, s);
+  	})();
+</script>
+
+<script>
+  	var _mtac = {"senseQuery":1};
+  	(function() {
+  		var mta = document.createElement("script");
+  		mta.src = "//pingjs.qq.com/h5/stats.js?v2.0.4";
+  		mta.setAttribute("name", "MTAH5");
+  		mta.setAttribute("sid", "500650262");
+
+  		var s = document.getElementsByTagName("script")[0];
+  		s.parentNode.insertBefore(mta, s);
+  	})();
+</script>
+</body>
+</html>

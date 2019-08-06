@@ -1,0 +1,122 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1, minimum-scale=1, user-scalable=no">
+	<title>短链接转换工具</title>
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/clipboard.min.js"></script>
+
+<style type="text/css">
+	
+
+.myStyle{
+	width: 90%;
+	margin: 10px;
+	padding-bottom: 5px;
+	padding-top: 5px;
+	font-size: 16px;
+
+	
+
+}
+
+</style>
+
+</head>
+<body>
+	<div class="myStyle" style="text-align: center;">
+	<input type="radio" name="radio_type" value="baiduyun">百度云
+	<input type="radio" name="radio_type" value="ad01" checked="true">百度云(广告)
+	<input type="radio" name="radio_type" value="xunlei">迅雷
+	</div>
+	<h4>原始链接</h4>
+	<textarea id="orgin_url" rows="3" class="myStyle"></textarea>
+	<br/>
+	<button id="btn_convert" class="myStyle" onclick="converRequest()">转换</button>
+	<button id="btn_tb_convert" class="myStyle" onclick="convertb()">转淘口令</button>
+	<h4>转换结果</h4>
+	<textarea id="result_url" rows="3" class="myStyle"></textarea>
+	<br/>
+	<button id="btn_copy" class="myStyle" onclick="copyAddress()" data-clipboard-action="copy" data-clipboard-target="#result_url">复制链接</button>
+	<br/>
+	<button onclick="clearAll()" class="myStyle">清空</button>
+
+	<p id="log_content"></p>
+
+	<script type="text/javascript">
+
+		function clearAll(){
+			document.getElementById("orgin_url").value = "";
+			document.getElementById("result_url").value = "";
+			document.getElementById("log_content").innerText = "";
+		}
+
+		function copyAddress(){
+			var clipboard = new Clipboard('#btn_copy');
+			clipboard.on('success',function(e){
+				document.getElementById("log_content").innerText = "复制成功";
+				
+			});
+			clipboard.on('error',function(e){
+				document.getElementById("log_content").innerText = "复制失败";
+			});
+		}
+
+		function getCheckedRadioValue(){
+			var value = "";
+			var radios = document.getElementsByName('radio_type');
+			
+			for (var i = 0; i < radios.length; i++) {
+				if (radios[i].checked==true) {
+					value = radios[i].value;
+					break;
+				}
+			}
+			return value;
+		}
+
+		function converRequest(){
+
+			var xmlhttp;
+			if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+				xmlhttp=new XMLHttpRequest();
+	 		}else{// code for IE6, IE5
+	 			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	 		}
+	 		xmlhttp.onreadystatechange=function(){
+	 			if (xmlhttp.readyState==4 && xmlhttp.status==200){
+	 				
+	 				document.getElementById("result_url").value=xmlhttp.responseText;
+	 				document.getElementById("log_content").innerText = "请求成功";
+	 			}
+	 		}
+	 		var movieaddress = document.getElementById("orgin_url").value;
+	 		var type = getCheckedRadioValue();
+	 		if (movieaddress == "" ) {
+	 			document.getElementById("log_content").innerText = "链接不能为空";
+	 		}else{
+	 			xmlhttp.open("GET","ConverShortUrlAction.php?movieaddress="+movieaddress+"&type="+type,true);
+	 			xmlhttp.send();
+	 		}
+
+	 		
+ 	}
+
+ 	function convertb(){
+ 		var content = document.getElementById("orgin_url").value;
+ 		var firstIndex = content.indexOf("￥");
+ 		var lastIndex = content.lastIndexOf("￥");
+ 		var kouling = content.substring(firstIndex,lastIndex);
+ 		
+ 		kouling = kouling.replace("￥","");
+
+ 		var result = "http://dl.vipbfx.cn/tb/commom.html?number="+kouling+"aa";
+ 		document.getElementById("result_url").value = result;
+ 	}
+
+ </script>
+
+</body>
+
+</html>
