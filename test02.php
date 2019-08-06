@@ -3,9 +3,11 @@ header("Access-Control-Allow-Origin: *");
 //header('Access-Control-Allow-Methods:*'); 
 header('Access-Control-Allow-Headers:x-requested-with,content-type');   
 header("content-type:text/html;charset=utf-8");
+// header("content-type:text/html;charset=gb2312");
 //header("Access-Control-Allow-Origin: http://127.0.0.1:8020");
 //include "TopSdk.php";
 include "ApiUtils.php";
+
 include "RStringUtil.php";
 require("wp_mysql_class.php");
 date_default_timezone_set('Asia/Shanghai');
@@ -59,8 +61,13 @@ var_dump($res);
 
 **/
 
+//旧版
+// $result = ApiUtils::analysisKeywords("￥p3gYYeKoHLS￥");
+// var_dump($result);
 
-// $result = ApiUtils::analysisKeywords("爱房间家用粉少女心可机洗定制】http://m.tb.cn/h.3gEHxPo?sm=b3cf83 点击链接，再选择浏览器咑閞；或復·制描述￥EWNtbVp0Gk7￥后");
+//新版
+// $result = ApiUtils20190611::analysisKeywords02("￥p3gYYeKoHLS￥");
+// var_dump($result);
 
 // $result = ApiUtils::convertApi('【一次性毛巾洗脸巾沐足浴巾无纺布足浴加厚足疗巾洗脚纸擦脚纸巾】http://m.tb.cn/h.36J6gxq?sm=a8e615 点击链接，再选择浏览器咑閞；或復·制这段描述￥oclubfM8H9G￥后到👉淘♂寳♀👈');
 
@@ -68,10 +75,76 @@ var_dump($res);
 
 
 
-//ApiUtils::getItemInfo('56366021766359');
-
-// $a = 2.3;
+// $result = ApiUtils::getItemInfo('18475042599');
+// var_dump($result);
+// // $a = 2.3;
 // var_dump($a/100)*10;
+
+
+// $result = ApiUtils::converShortUrl("http://dl.vipbfx.cn/home/index.html?number=http%3A%2F%2Fxunlei.xiazai-zuida.com%2F1906%2FZhuilong2%EF%BC%9A%E8%B4%BC%E7%8E%8B.HD1280%E9%AB%98%E6%B8%85%E5%9B%BD%E8%AF%AD%E4%B8%AD%E5%AD%97%E7%89%88.mp4");
+// $result = ApiUtils::converShortUrl("http://download.xunleizuida.com/1904/HY为家.BD1280高清中英双字版.mp4");
+// var_dump($result);
+	//2849184197
+$dir = "F:/BaiduYunDownload/wwwd";
+// $dir = iconv("GBK", "utf-8", $dir);
+
+// $filesHandle = opendir($dir);
+// while ($file = readdir($filesHandle)) {
+// 	var_dump(mb_convert_encoding($file,"utf-8","GBK"));
+// }
+
+
+
+function myScanDir($dir){
+	$files = array();
+	if (is_dir($dir)) {
+		if ($handle = opendir($dir)) {
+			
+			while (($file = readdir($handle)) !== false) {
+
+				if($file != "." && $file != ".."){
+					
+					if (is_dir($dir."/".$file)) {
+						$files[$file] = myScanDir($dir."/".$file);
+						$file = mb_convert_encoding($file,"utf-8","GBK");
+						if (strstr($file, "学益佳")) {
+							$newFileName = str_replace("学益佳", "", $file);
+							$newDir = mb_convert_encoding($dir, "utf-8","GBK");
+							var_dump(rename($newDir."/".$file,$newDir."/".$newFileName));
+							echo "修改后的名字:".$newFileName."\n";
+						}
+
+						
+
+						echo "目录:".$file."\n";
+					}else{
+						$file = mb_convert_encoding($file,"utf-8","GBK");
+						$files[] = $dir."/".$file;
+
+
+						if (strstr($file, "学益佳")) {
+							$newFileName = str_replace("学益佳", "", $file);
+							$newDir = mb_convert_encoding($dir, "utf-8","GBK");
+							var_dump(rename($newDir."/".$file,$newDir."/".$newFileName));
+							echo "修改后的名字:".$newFileName."\n";
+						}
+
+						echo "文件名:".$file."\n";
+					}
+				}
+
+				
+			}
+		}
+	}
+	closedir($handle);
+	return $files;
+}
+
+myScanDir($dir);
+
+// var_dump(urlencode("http://xunlei.xiazai-zuida.com/1906/Zhuilong2：贼王.HD1280高清国语中字版.mp4"));
+
 
 
 // $result = ApiUtils::getHighCommission("558587300390",$hdkKey,$pid);
@@ -134,28 +207,51 @@ var_dump($res);
 // var_dump($count);
 // var_dump($result['data']);
 
-$serverName = "198.177.127.149";
-$userName = "zxdycom_dongge";
-$userPassword = "csd13668945255a";
-$dbName = "zxdycom_haowuriji";
-$mysqlDb = new wp_mysql_class($serverName,$userName,$userPassword,$dbName);
-$mysqlDb->dbConnect();
-// $selectSql = "select * from zbp_post ";
-$selectSql = "select count(*) as a from zbp_post where log_itemid ='22221111'";
-$log_PostTime = time();
-// $selectSql = "update zbp_post set log_PostTime = '".$log_PostTime."' where log_itemid = '551864794260'";
-$selectResult = $mysqlDb->query($selectSql);
-// $a = mysqli_fetch_ob
-// while ($rows = $selectResult->fetch_object()) {
-// 	# code...
-// 	echo $rows->log_Title."\n";
-// }
-$row=mysqli_fetch_array($selectResult,MYSQLI_ASSOC);
-echo $row['a'];
+// $serverName = "198.177.127.149";
+// $userName = "zxdycom_dongge";
+// $userPassword = "csd13668945255a";
+// $dbName = "zxdycom_haowuriji";
+// $mysqlDb = new wp_mysql_class($serverName,$userName,$userPassword,$dbName);
+// $mysqlDb->dbConnect();
 
-$mysqlDb->dbClose();
+// $selectSql = "select count(*) as a from zbp_post where log_itemid ='22221111'";
+// $log_PostTime = time();
+
+// $selectResult = $mysqlDb->query($selectSql);
+
+// $row=mysqli_fetch_array($selectResult,MYSQLI_ASSOC);
+// echo $row['a'];
+
+// $mysqlDb->dbClose();
 
 
+
+//测试单品api
+// $result = ApiUtils::getItemDetail('gracehe','586643759651');
+// var_dump($result);
+
+//测试高佣金接口3
+// $result = ApiUtils::getHighCommission3("18475042599","gracehe","mm_112728812_44352900_449168271","");
+// var_dump(json_decode($result));
+// 
+//测试大淘客单品详情
+// $result = ApiUtils::getItemDetail4DTK("592358456921");
+// $a = $result['data']['total_num'];
+// var_dump($a);
+
+//测试店铺转换淘口令
+// $result = ApiUtils::shop2Taowords($tbKey,$tbSecret,$pid,"4020099716");
+// var_dump($result);
+
+//测试达人文章
+// $result = ApiUtils::getDaRenWenZhang("gracehe","4948");
+// $data = $result['data']['article'];
+// var_dump(htmlspecialchars_decode($data));
+
+
+//测试二维码图片生成
+// $result = ApiUtils::creatImage("https://img.alicdn.com/imgextra/i3/725677994/O1CN0128vIcFXg5I7fJto_!!725677994.jpg","http://wx.tshtts.cn/common/index.html?number=999aa","3150126865487");
+// echo $result;
 
 // $contentStr="999EAZobeqKyTS￥999";
 // $contentStr="999€EAZobeqKyTS€999";

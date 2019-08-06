@@ -6,6 +6,7 @@ header('Access-Control-Allow-Headers:x-requested-with,content-type');
 header("content-type:text/html;charset=utf-8");
 include "ApiUtils.php";
 include "RStringUtil.php";
+include "RLogUtil.php";
 date_default_timezone_set('Asia/Shanghai');
 
 
@@ -47,10 +48,10 @@ function coverDescribe($itemtitle,$itemshorttitle,$itemdesc,$itemprice,$itemendp
 // $syncWeb = $_GET['syncweb'];
 
 $uservalue = "gui_ling";
-$cid = "1";
+$cid = "2";
 $syncWeb = "0";
 
-$db = new MySqliteUtil('/Applications/XAMPP/xamppfiles/htdocs/phpworkspace/tbksdk/haodanku.db');
+$db = new MySqliteUtil('D:\phpStudy\PHPTutorial\WWW\php\graceblog\haodanku.db');
 
 if(!$db){
 	echo "数据库打开失败\n".$db->lastErrorMsg();
@@ -93,14 +94,15 @@ if ($result_code!=1) {
 
 	$describe ;
 //打开数据库
-	$serverName = "198.177.127.149";
-	$userName = "zxdycom_dongge";
-	$userPassword = "csd13668945255a";
-	$dbName = "zxdycom_haowuriji";
+	$serverName = "127.0.0.1";
+	$userName = "root";
+	$userPassword = "root";
+	$dbName = "myzblog";
 	$mysqlDb = new wp_mysql_class($serverName,$userName,$userPassword,$dbName);
 	$mysqlDb->dbConnect();
 
-	for ($i=0; $i < 100; $i++) { 
+	for ($i=0; $i < 3; $i++) { 
+		RLogUtil::console_log("log:".$i);
 		$temp_product = $result_data[$i];
 		
 		$product_id = $temp_product['product_id'];

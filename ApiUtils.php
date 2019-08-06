@@ -4,8 +4,8 @@ error_reporting( E_ALL&~E_NOTICE );
 class ApiUtils{
 
 	//zhaoliuping1967
-	public static $my_app_key = "25648468";
-	public static $my_app_secret_key="aa762b360d46a544fd2e0f877dfeee79";
+	public static $my_app_key = "25622488";
+	public static $my_app_secret_key="2e872c09ff31878d86351f3b592a7c48";
 	
 	
 
@@ -21,6 +21,20 @@ class ApiUtils{
 		$req->setPasswordContent($taowords);
 		$resp = $c->execute($req);
 		//print_r($resp);
+		return $resp;
+	}
+
+	//201906
+	public static function analysisKeywords02($taowords){
+		$c = new TopClient;
+		$c->appkey = self::$my_app_key;
+		$c->secretKey = self::$my_app_secret_key;
+		$$req = new TbkTpwdConvertRequest;
+		$req->setPasswordContent($taowords);
+		//mm_131510009_450450026_108534950088
+		$req->setAdzoneId("108534950088");
+		$req->setDx("1");
+		$resp = $c->execute($req);
 		return $resp;
 	}
 
@@ -60,6 +74,34 @@ class ApiUtils{
 
 		
 		return $n_tbk_item;
+	}
+
+	public static function shop2Taowords($tbKey,$tbSecret,$pid,$shopId){
+		$c = new TopClient;
+		$c->appkey = $tbKey;
+		$c->secretKey = $tbSecret;
+		$req = new TbkShopConvertRequest;
+		$req->setFields("user_id,click_url");
+		$req->setUserIds($shopId);
+		$req->setPlatform("1");
+		$req->setAdzoneId($pid);
+		// $req->setUnid("demo");
+		$resp = $c->execute($req);
+		return $resp;
+
+	}
+
+	public static function getItemDetail4DTK($itemId){
+		$request_url = 'http://api.dataoke.com/index.php?r=port/index&appkey=c6409e9647&v=2&id='
+		.$itemId; 
+		$curl = curl_init();
+		curl_setopt($curl, CURLOPT_URL, $request_url);	
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($curl, CURLOPT_TIMEOUT, 10);
+		$result = curl_exec($curl);
+		curl_close($curl);
+		$send_result = json_decode($result,true);
+		return $send_result;
 	}
 
 	public static function getHighCommission($itemId,$hdkKey,$pid){
@@ -104,7 +146,7 @@ class ApiUtils{
 
 	}
 
-		public static function getHighCommission2($itemId,$hdkKey,$pid){
+	public static function getHighCommission2($itemId,$hdkKey,$pid){
 		
 		$send_result = array();
 		$request_url = 'http://v2.api.haodanku.com/ratesurl'; 
@@ -112,6 +154,27 @@ class ApiUtils{
 		$request_data['itemid'] = $itemId; 
 		$request_data['pid'] = $pid; 
 		//$request_data['activityid'] = '7d6e6619ff754e1e94ea140e2a82240f'; 
+		$ch = curl_init(); 
+		curl_setopt($ch,CURLOPT_URL,$request_url); 
+		curl_setopt($ch,CURLOPT_RETURNTRANSFER,1); 
+		curl_setopt($ch, CURLOPT_TIMEOUT,10); 
+		curl_setopt($ch,CURLOPT_POST,1); 
+		curl_setopt($ch,CURLOPT_POSTFIELDS,$request_data); 
+		$res = curl_exec($ch); 
+		curl_close($ch); 
+		
+		return $res;
+
+	}
+
+	public static function getHighCommission3($itemId,$hdkKey,$pid,$activityId){
+		
+		$send_result = array();
+		$request_url = 'http://v2.api.haodanku.com/ratesurl'; 
+		$request_data['apikey'] = $hdkKey; 
+		$request_data['itemid'] = $itemId; 
+		$request_data['pid'] = $pid; 
+		$request_data['activityid'] = $activityId; 
 		$ch = curl_init(); 
 		curl_setopt($ch,CURLOPT_URL,$request_url); 
 		curl_setopt($ch,CURLOPT_RETURNTRANSFER,1); 
@@ -155,6 +218,71 @@ class ApiUtils{
 		return $send_result;
 
 	}
+
+	public static function getItemDetail($hdkKey,$itemid){
+		$request_url = "http://v2.api.haodanku.com/item_detail/apikey/".$hdkKey."/itemid/".$itemid;		
+		$curl = curl_init();
+		curl_setopt($curl, CURLOPT_URL, $request_url);	
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($curl, CURLOPT_TIMEOUT, 10);
+		$result = curl_exec($curl);
+		curl_close($curl);
+		$send_result = json_decode($result,true);
+		return $send_result;
+	}
+
+	public static function getDaRenWenZhang($hdkKey,$articleId){
+		$request_url = "http://v2.api.haodanku.com/talent_article/apikey/".$hdkKey."/id/".$articleId."/";		
+		$curl = curl_init();
+		curl_setopt($curl, CURLOPT_URL, $request_url);	
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($curl, CURLOPT_TIMEOUT, 10);
+		$result = curl_exec($curl);
+		curl_close($curl);
+
+		$send_result = json_decode($result,true);
+		// var_dump($send_result);
+		return $send_result;
+	}
+
+	public static function creatImage($picUrl,$productUrl,$itemId){
+		$request_url = "http://b.rebate365.cn/qrcode/CreatQRcodeImageAction02.php?picurl=".$picUrl."&producturl=".$productUrl."&itemid=".$itemId;		
+		$curl = curl_init();
+		curl_setopt($curl, CURLOPT_URL, $request_url);	
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($curl, CURLOPT_TIMEOUT, 10);
+		$result = curl_exec($curl);
+		curl_close($curl);
+		return $result;
+	}
+
+	public static function creatImage02($picUrl,$productUrl,$itemId,$itemTitle,$itemPrice,$itemendPrice){
+		$request_url = "http://b.rebate365.cn/qrcode/CreatQRcodeImageAction03.php?picurl=".$picUrl."&producturl=".$productUrl."&itemid=".$itemId."&itemtitle=".$itemTitle."&itempirce=".$itemPrice."&itemendpirce=".$itemendPrice;		
+		$curl = curl_init();
+		curl_setopt($curl, CURLOPT_URL, $request_url);	
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($curl, CURLOPT_TIMEOUT, 10);
+		$result = curl_exec($curl);
+		curl_close($curl);
+		return $result;
+	}
+
+public static function converShortUrl($longUrl){
+		$request_url = "https://api.weibo.com/2/short_url/shorten.json?source=2849184197&url_long=".$longUrl;		
+		$curl = curl_init();
+		curl_setopt($curl, CURLOPT_URL, $request_url);	
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($curl, CURLOPT_TIMEOUT, 10);
+		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
+		$result = curl_exec($curl);
+		curl_close($curl);
+		$send_result = json_decode($result,true);
+
+		return $send_result;
+
+	}
+
+
 
 	public static function convertApi($taowords){
 		$send_result = array('code'=>'0','msg'=>'error','data'=>'');

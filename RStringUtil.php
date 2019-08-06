@@ -2,6 +2,10 @@
 
 class RStringUtil{
 
+	public static function dirUtil(){
+		
+	}
+
 
 	public static function isKouLing($contentStr){
 		if (strstr($contentStr, "￥")||strstr($contentStr, "€")) {

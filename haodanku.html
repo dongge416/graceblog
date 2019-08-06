@@ -14,47 +14,57 @@
 
 <body>
 	<br/>
-	<input type="radio" name="radio_user" value="tianyoulan" checked>机器人1号
+	<input type="radio" name="radio_user" value="tianyoulan">机器人1号
 	<input type="radio" name="radio_user" value="chenzhuxi5255">机器人2号
 	<input type="radio" name="radio_user" value="zhaoliuping1967">机器人3号
-	<input type="radio" name="radio_user" value="gui_ling">gui_玲
-	<input type="checkbox" name="synchronous_web" id="cb_synchronous_web">是否同步到网站<br/>
+	<input type="radio" name="radio_user" value="gui_ling" checked>gui_玲
+	<input type="checkbox" name="yure" id="cb_yure">是否预热
+	<br/>
 
+	<hr/>
+	<input type="radio" name="radio_item_type" value="rx" checked>任选商品
+	<input type="radio" name="radio_item_type" value="tmcs">天猫超市商品
+	<input type="radio" name="radio_item_type" value="pp">品牌商品
+	<input type="radio" name="radio_item_type" value="jhs">聚划算淘抢购商品
 	
 	<br/>
 	<hr/>
-	<input type="radio" name="radio_saleslist" value="0" checked>全部
-	<input type="radio" name="radio_saleslist" value="1">女装
-	<input type="radio" name="radio_saleslist" value="2">男装
-	<input type="radio" name="radio_saleslist" value="3">内衣
-	<input type="radio" name="radio_saleslist" value="4">美妆
-	<input type="radio" name="radio_saleslist" value="5">配饰
-	<input type="radio" name="radio_saleslist" value="6">鞋品
-	<input type="radio" name="radio_saleslist" value="7">箱包
-	<input type="radio" name="radio_saleslist" value="8">儿童
-	<input type="radio" name="radio_saleslist" value="9">母婴
-	<input type="radio" name="radio_saleslist" value="10">居家
-	<input type="radio" name="radio_saleslist" value="11">美食
-	<input type="radio" name="radio_saleslist" value="12">数码
-	<input type="radio" name="radio_saleslist" value="13">家电<br/>
+	<input type="radio" name="radio_image_type" value="1" checked>竖图
+	<input type="radio" name="radio_image_type" value="2">横图
 	<br/>
+	商品id:<input type="text" name="item_id" id="item_id" style="width: 500px;">
+	<button onclick="creatQRcodeImage4Kouling()">生成二维码图片</button><br/>
 
-	<button id="btn_update" onclick="loadXMLDoc()">更新榜单</button>
-	<hr/>
-	<button id="btn_brand" onclick="getBrand()">更新品牌榜单</button>
+
+	<div>
+		<h4>粘贴你选择的商品</h4>
+
+	</div>
+	
+	<textarea id="item_info" rows="5" cols="80"></textarea>
+	<br/>
+	<button id="add_item" onclick="addItem()">插入商品</button>
+	<button id="add_item" onclick="creatQRcodeImage()">生成二维码图片</button>
+	<button id="clear_item_info" onclick="clearItemInfo()">清空文本框</button>
+	
 	<div>
 		<h4>日志信息</h4>
 		<p id="log_text"></p>
 
 	</div>
-	<textarea id="log_content" rows="20" cols="100"></textarea>
+
+	<textarea id="log_content" rows="5" cols="80"></textarea>
+	<img id="img_qrcode" style="width: 86px;height: 121.6px" src=""/>
+	<br/>
+	<button  onclick="creatArticle4HDK()">生成文章(好单库商品)</button>
+	<button  onclick="creatArticle4DTK()">生成文章(大淘客商品)</button>
 
 
 	<script type="text/javascript">
 
-		function isSynchronousWeb(){
+		function isYure(){
 			var result = 0;
-			var cb = document.getElementById('cb_synchronous_web');
+			var cb = document.getElementById('cb_yure');
 			if (cb.checked==true) {
 				result = 1;
 			}
@@ -75,9 +85,9 @@
 		}
 
 
-		function getSalesListCid(){
+		function getItemType(){
 			var value = "";
-			var radios = document.getElementsByName('radio_saleslist');
+			var radios = document.getElementsByName('radio_item_type');
 			
 			for (var i = 0; i < radios.length; i++) {
 				if (radios[i].checked==true) {
@@ -119,9 +129,9 @@
 
 
 
-		function getBrand(){
+ 	function getBrand(){
 
-			var xmlhttp;
+ 		var xmlhttp;
 		if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
 			xmlhttp=new XMLHttpRequest();
  		}else{// code for IE6, IE5
@@ -140,7 +150,247 @@
  		document.getElementById("log_text").innerText = "向服务器发送请求,等待中...";
  	}	
 
+ 	/**
+ 	 * 获取商品ID
+ 	 * 
+ 	 */
+ 	 function getItemId(){
+ 	 	var content = document.getElementById("item_info").value;
+ 	 	var rows = content.split("\n");
+ 	 	var itemId = "";
+ 	 	for (var i = 0; i < rows.length; i++) {
+ 	 		var index = rows[i].indexOf("htm?id");
+ 	 		if (index > 0) {
+ 	 			var rowLength = rows[i].length;
+ 	 			itemId = rows[i].substring(index+7,rowLength);
+ 	 		}
 
- </script>
-</body>
-</html>
+ 	 	}
+
+ 	 	return itemId;
+
+
+ 	 }
+
+ 	 function getItemActivityId(){
+ 	 	var content = document.getElementById("item_info").value;
+ 	 	var rows = content.split("\n");
+ 	 	var activityId = "";
+ 	 	for (var i = 0; i < rows.length; i++) {
+ 	 		var index = rows[i].indexOf("activityId=");
+ 	 		if (index > 0) {
+ 	 			var rowLength = rows[i].length;
+ 	 			activityId = rows[i].substring(index+11,rowLength);
+ 	 		}
+
+ 	 	}
+
+ 	 	return activityId;
+
+
+ 	 }
+
+ 	 function getItemInfo(){
+ 	 	var content = document.getElementById("item_info").value;
+ 	 	var rows = content.split("\n");
+ 	 	var activityId = "";
+ 	 	for (var i = 0; i < rows.length; i++) {
+ 	 		console.log(i+":"+rows[i]);
+ 	 		var index = rows[i].indexOf("activityId=");
+ 	 		if (index > 0) {
+ 	 			var rowLength = rows[i].length;
+ 	 			activityId = rows[i].substring(index+11,rowLength);
+ 	 		}
+
+ 	 	}
+ 	 }
+
+
+ 	/**
+ 	 * 添加商品信息
+ 	 */
+ 	 function addItem(){
+
+ 	 	var xmlhttp;
+		if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+			xmlhttp=new XMLHttpRequest();
+ 		}else{// code for IE6, IE5
+ 			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+ 		}
+ 		xmlhttp.onreadystatechange=function(){
+ 			if (xmlhttp.readyState==4 && xmlhttp.status==200){
+ 				document.getElementById("log_text").innerText = "查询完毕";
+ 				document.getElementById("log_content").value=xmlhttp.responseText;
+ 			}
+ 		}
+
+ 		var itemType = getItemType();
+ 		var content = document.getElementById("item_info").value;
+ 		var rows = content.split("\n");
+
+ 		if (isYure()==1) {
+ 			//预热商品
+ 			for (var i = 0; i < rows.length; i++) {
+ 				console.log(i+":"+rows[i]);
+ 			}
+ 			var itemTitle = rows[1].trim();
+ 			var itemPriceDesc = rows[2].trim();
+ 			var itemDesc = rows[6].trim();
+ 			var activityId = "" ;
+ 			var activityIdIndex = rows[4].indexOf("activityId=");
+ 			if (activityIdIndex > 0) {
+ 				var rowLength = rows[4].length;
+ 				activityId = rows[4].substring(activityIdIndex+11,rowLength);
+ 			}
+
+ 			var itemId = "";
+ 			var itemIdIndex = rows[5].indexOf("htm?id");
+ 			if (itemIdIndex > 0) {
+ 				var rowLength = rows[5].length;
+ 				itemId = rows[5].substring(itemIdIndex+7,rowLength);
+ 			}
+
+ 			
+ 			
+
+ 		}else{
+ 			//普通商品
+ 			var itemTitle = rows[1].trim();
+ 			var itemPriceDesc = rows[2].trim();
+ 			var itemDesc = rows[5].trim();
+ 			var activityId = "" ;
+ 			var activityIdIndex = rows[3].indexOf("activityId=");
+ 			if (activityIdIndex > 0) {
+ 				var rowLength = rows[3].length;
+ 				activityId = rows[3].substring(activityIdIndex+11,rowLength);
+ 			}
+
+ 			var itemId = "";
+ 			var itemIdIndex = rows[4].indexOf("htm?id");
+ 			if (itemIdIndex > 0) {
+ 				var rowLength = rows[4].length;
+ 				itemId = rows[4].substring(itemIdIndex+7,rowLength);
+ 			}
+ 		}
+
+ 		
+ 		
+
+ 		console.log("标题:"+itemTitle+",价格:"+itemPriceDesc+",描述:"+itemDesc);
+ 		
+ 		xmlhttp.open("GET","AddItemAction.php?itemType="+itemType+"&itemId="+itemId+"&activityId="+activityId+"&itemTitle="+itemTitle+"&itemPriceDesc="+itemPriceDesc+"&itemDesc="+itemDesc,true);
+ 		xmlhttp.send();
+ 		document.getElementById("log_text").innerText = "向服务器发送请求,等待中...";
+ 	}	
+
+ 	function getItemId(){
+ 		var content = document.getElementById("item_info").value;
+ 		var rows = content.split("\n");
+ 		var itemId = -1;
+ 		for (var i = 0; i < rows.length; i++) {
+ 			var itemIndex = rows[i].indexOf("item.htm?id=");
+ 			if (itemIndex != -1) {
+ 				//item.htm?id=
+ 				itemId = rows[i].substring(itemIndex+12,rows[i].length);
+ 			}
+ 			
+ 		}
+ 		console.log("itemId:"+itemId);
+ 		return itemId;
+ 	}
+
+ 	function creatQRcodeImage4Kouling(){
+
+ 		var xmlhttp;
+		if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+			xmlhttp=new XMLHttpRequest();
+ 		}else{// code for IE6, IE5
+ 			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+ 		}
+ 		xmlhttp.onreadystatechange=function(){
+ 			if (xmlhttp.readyState==4 && xmlhttp.status==200){
+ 				document.getElementById("log_text").innerText = "查询完毕";
+ 				document.getElementById("img_qrcode").src=xmlhttp.responseText;
+ 				document.getElementById("log_content").value=xmlhttp.responseText;
+ 			}
+ 		}
+ 		
+
+ 		var itemId = document.getElementById("item_id").value;
+ 		var uservalue = getCheckedRadioValue();
+ 		//图片模式
+ 		var imageType = 1;
+ 		var radios = document.getElementsByName('radio_image_type');
+
+ 		for (var i = 0; i < radios.length; i++) {
+ 			if (radios[i].checked==true) {
+ 				imageType = radios[i].value;
+ 				break;
+ 			}
+ 		}
+ 		
+ 		xmlhttp.open("GET","CreatQRcodeImageAction4Kouling.php?itemid="+itemId+"&uservalue="+uservalue+"&imagetype="+imageType,true);
+ 		xmlhttp.send();
+ 		document.getElementById("log_text").innerText = "向服务器发送请求,等待中...";
+ 	}	
+
+ 	function creatQRcodeImage(){
+
+ 		var xmlhttp;
+		if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+			xmlhttp=new XMLHttpRequest();
+ 		}else{// code for IE6, IE5
+ 			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+ 		}
+ 		xmlhttp.onreadystatechange=function(){
+ 			if (xmlhttp.readyState==4 && xmlhttp.status==200){
+ 				document.getElementById("log_text").innerText = "查询完毕";
+ 				document.getElementById("img_qrcode").src=xmlhttp.responseText;
+ 				document.getElementById("log_content").value=xmlhttp.responseText;
+ 			}
+ 		}
+ 		var itemId = getItemId();
+ 		var uservalue = getCheckedRadioValue();
+ 		//图片模式
+ 		var imageType = 1;
+ 		var radios = document.getElementsByName('radio_image_type');
+
+ 		for (var i = 0; i < radios.length; i++) {
+ 			if (radios[i].checked==true) {
+ 				imageType = radios[i].value;
+ 				break;
+ 			}
+ 		}
+ 		console.log("ppp："+imageType);
+ 		xmlhttp.open("GET","CreatQRcodeImageAction.php?uservalue="+uservalue+"&itemid="+itemId+"&imagetype="+imageType,true);
+ 		xmlhttp.send();
+ 		document.getElementById("log_text").innerText = "向服务器发送请求,等待中...";
+ 	}	
+
+
+ 	/**
+ 	 * 清空文本输入框
+ 	 * 
+ 	 */
+ 	 function clearItemInfo(){
+ 	 	document.getElementById("item_info").value = "";
+ 	 	document.getElementById("item_id").value = "";
+ 	 	document.getElementById("kouling").value = "";
+ 	 }
+
+ 	 function creatArticle4HDK(){
+ 	 	var uservalue = getCheckedRadioValue();
+ 	 	var myUrl = "WxArticleAction.php?uservalue="+uservalue;
+ 	 	open(myUrl);
+ 	 }
+
+ 	 function creatArticle4DTK(){
+ 	 	var uservalue = getCheckedRadioValue();
+ 	 	var myUrl = "WxArticleAction4DTK.php?uservalue="+uservalue;
+ 	 	open(myUrl);
+ 	 }
+
+
+ 	</script>
+ </body>
+ </html>
